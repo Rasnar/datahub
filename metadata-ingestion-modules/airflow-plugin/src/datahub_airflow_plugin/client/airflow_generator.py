@@ -110,6 +110,7 @@ class AirflowGenerator:
                                 orchestrator=flow_urn.orchestrator,
                                 flow_id=task.external_dag_id,
                                 env=flow_urn.cluster,
+                                platform_instance=flow_urn.platform_instance,
                             )
                         ),
                     )
@@ -152,6 +153,7 @@ class AirflowGenerator:
             id=id,
             orchestrator=orchestrator,
             description=description,
+            platform_instance=config.platform_instance,
         )
 
         flow_property_bag: Dict[str, str] = {}
@@ -219,6 +221,7 @@ class AirflowGenerator:
         capture_owner: bool = True,
         capture_tags: bool = True,
         config: Optional[DatahubLineageConfig] = None,
+        platform_instance: Optional[str] = None,
     ) -> DataJob:
         """
 
@@ -232,7 +235,10 @@ class AirflowGenerator:
         :return: DataJob - returns the generated DataJob object
         """
         dataflow_urn = DataFlowUrn.create_from_ids(
-            orchestrator="airflow", env=cluster, flow_id=dag.dag_id
+            orchestrator="airflow",
+            env=cluster,
+            flow_id=dag.dag_id,
+            platform_instance=platform_instance,
         )
         datajob = DataJob(id=task.task_id, flow_urn=dataflow_urn)
 
